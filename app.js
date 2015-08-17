@@ -1,11 +1,15 @@
 var express = require('express');
 var path = require('path');
-//µ¼Èë Í¼±êÖĞ¼ä¼ş
+
 var favicon = require('serve-favicon')
-//ÈÕÖ¾ÖĞ¼ä¼ş
+//æ—¥å¿—ä¸­é—´ä»¶
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+//ç”¨æ¥æç¤º ä¸­é—´ä»¶
+var flash = require('connect-flash');
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -13,6 +17,10 @@ var users = require('./routes/users');
 
 var app = express();
 
+app.use(session({
+  secret:'blog'
+}))
+app.use(flash());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -25,6 +33,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+  res.locals.error ='';
+  res.locals.title = 'welcom'
+  next();
+})
 app.use('/', routes);
 app.use('/users', users);
 
