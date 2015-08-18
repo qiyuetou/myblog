@@ -1,4 +1,5 @@
 var express = require('express');
+var User = require('../modal/User');
 var router = express.Router();
 
 /* GET users listing. */
@@ -27,7 +28,23 @@ router.post('/reg', function(req, res, next) {
     return res.redirect('back');
   }
 
-
+  var md5 = crypto.createHash('md5');
+  password = md5.update().digest('hex');
+  var newUser = new User({
+    username:username,
+    password:password,
+    email:req.body.email
+  })
+  newUser.save(function(err,user){
+      if(err){
+        req.flash('error','注册失败');
+        return res.redirect('back');
+      }else{
+        req.session.user
+        req.flash('success','注册成功');
+        res.redirect('/');
+      }
+  })
   res.redirect('/')
 });
 module.exports = router;
