@@ -1,5 +1,6 @@
 var mongoose = require('../db');
 var crypto = require('crypto');
+
 var userSchema = new mongoose.Schema({
     username:String,
     password:String,
@@ -14,11 +15,13 @@ var userModel = mongoose.model('user',userSchema);
 function User(user){
     this.username = user.username;
     this.password = user.password;
-    this.emial = user.email;
+    this.email = user.email;
 }
 
 User.prototype.save = function(callback){
+
     var md5 =crypto.createHash('md5');
+
     emailMd5 = md5.update(this.email.toLowerCase()).digest('hex');
     avatar = "https://secure.gravatar.com/avatar/"+emailMd5 +"?s=48";
 
@@ -27,7 +30,7 @@ User.prototype.save = function(callback){
         username : this.username,
         password : this.password,
         email  : this.email,
-        avatar : avater
+        avatar : avatar
     })
 
     //保存到数据库中去

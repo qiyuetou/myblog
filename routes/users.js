@@ -1,7 +1,7 @@
 var express = require('express');
 var User = require('../modal/User');
 var router = express.Router();
-
+var crypto = require('crypto');
 /* GET users listing. */
 router.get('/reg', function(req, res, next) {
   res.render('user/reg',{
@@ -9,6 +9,7 @@ router.get('/reg', function(req, res, next) {
     error:req.flash('error').toString()
   })
 });
+
 router.post('/reg', function(req, res, next) {
 
   var username = req.body.username;
@@ -29,7 +30,7 @@ router.post('/reg', function(req, res, next) {
   }
 
   var md5 = crypto.createHash('md5');
-  password = md5.update().digest('hex');
+  password = md5.update(password).digest('hex');
   var newUser = new User({
     username:username,
     password:password,
@@ -40,9 +41,9 @@ router.post('/reg', function(req, res, next) {
         req.flash('error','注册失败');
         return res.redirect('back');
       }else{
-        req.session.user
+        //req.session.user;
         req.flash('success','注册成功');
-        res.redirect('/');
+        res.redirect('/users/reg');
       }
   })
   res.redirect('/')
